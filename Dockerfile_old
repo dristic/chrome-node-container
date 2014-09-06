@@ -1,0 +1,32 @@
+#
+# Chrome and Node Dockerfile
+#
+# Dan
+#
+
+# Pull base image.
+FROM dockerfile/ubuntu
+
+# Install LXDE and VNC server. Install Node. Install Chrome.
+RUN \
+  apt-get update && \
+  DEBIAN_FRONTEND=noninteractive apt-get install -y lxde-core lxterminal tightvncserver && \
+  sudo rm -rf /var/lib/apt/lists/* && \
+  sudo apt-get install software-properties-common && \
+  sudo add-apt-repository --yes ppa:chris-lea/node.js && \
+  sudo apt-get -qq update && \
+  sudo apt-get -y install nodejs && \
+  wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | sudo apt-key add - && \
+  sudo su root -c 'echo "deb http://dl.google.com/linux/chrome/deb/ stable main" > /etc/apt/sources.list.d/google.list' && \
+  sudo apt-get update && \
+  sudo apt-get install -y google-chrome-stable && \
+  sudo rm -rf /var/lib/apt/lists/*
+
+# Define working directory.
+WORKDIR /data
+
+# Define default command.
+CMD ["bash"]
+
+# Expose ports.
+EXPOSE 5901
